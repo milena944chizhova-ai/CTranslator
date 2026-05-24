@@ -1,0 +1,19 @@
+## .NET build artifacts
+bin/
+obj/
+*.user
+.vs/
+
+## Output files (generated at runtime)
+lexer_output.txt
+ast_output.txt
+symbols_output.txt
+
+## OS
+.DS_Store
+Thumbs.db
+
+## IDE
+.vscode/
+*.suo
+*.sln.docstates

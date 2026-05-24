@@ -1,0 +1,17 @@
+int a;
+int b;
+int max;
+
+scanf("%d", &a);
+scanf("%d", &b);
+
+if (a > b)
+{
+    max = a;
+}
+else
+{
+    max = b;
+}
+
+printf("%d\n", max);
