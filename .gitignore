@@ -1,0 +1,20 @@
+﻿# Скомпилированные файлы
+*.o
+*.exe
+ctranslator
+ctranslator.exe
+
+# Выходные файлы анализаторов
+lexer_output.txt
+ast_output.txt
+symbols_output.txt
+
+# Временные файлы
+*.tmp
+*~
+
+# Visual Studio / CLion
+.vs/
+.idea/
+CMakeFiles/
+cmake-build-*/

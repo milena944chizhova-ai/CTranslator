@@ -13,8 +13,8 @@
 | Подмножество языка | Арифм. выражения целого типа, присваивание, условный оператор, ввод-вывод |
 | Промежуточный код | Синтаксическое дерево (AST) |
 | Тип транслятора | Интерпретатор |
-| Метод разбора | Расширенное предшествование |
-| Язык реализации | C# (.NET 8) |
+| Метод разбора | Расширенное предшествование операторов (матрица 14×14) |
+| Язык реализации | **C (C99, GCC)** |
 
 ---
 
@@ -52,17 +52,17 @@ if (a > b) {
 ## Структура проекта
 
 ```
-CTranslator/
-├── CTranslator.csproj       # файл проекта .NET
-├── README.md                # документация
+├── Makefile                 # сборка Linux/macOS
+├── build.bat                # сборка Windows (GCC/MinGW)
+├── README.md
 ├── src/
-│   ├── Token.cs             # типы лексем
-│   ├── Lexer.cs             # лексический анализатор (конечный автомат)
-│   ├── AstNodes.cs          # узлы синтаксического дерева (AST)
-│   ├── Parser.cs            # синтаксический анализатор (расширенное предшествование)
-│   ├── SemanticAnalyzer.cs  # семантический анализатор + таблица символов
-│   ├── Interpreter.cs       # интерпретатор (выполнение по AST)
-│   └── Program.cs           # точка входа
+│   ├── token.h / token.c    # типы лексем и токенов
+│   ├── lexer.h / lexer.c    # лексический анализатор (ДКА, 4 состояния: S0-S3)
+│   ├── ast.h   / ast.c      # узлы AST, статический пул памяти
+│   ├── parser.h / parser.c  # синтаксический анализатор (матрица предшествования 14×14)
+│   ├── semantic.h / semantic.c # семантический анализатор, таблица символов
+│   ├── interpreter.h / interpreter.c # интерпретатор (обход AST)
+│   └── main.c               # точка входа
 └── tests/
     ├── input.txt            # основной тест (max двух чисел)
     ├── test_arith.txt       # тест арифметических выражений
@@ -75,46 +75,38 @@ CTranslator/
 
 ## Требования
 
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) или новее
-
-Проверить установку:
-```bash
-dotnet --version
-```
+- **GCC** с поддержкой C99 (`gcc --version`)
+- Linux/macOS: `make`
+- Windows: [MinGW-w64](https://www.mingw-w64.org/) или [TDM-GCC](https://jmeubank.github.io/tdm-gcc/)
 
 ---
 
 ## Сборка и запуск
 
-### Сборка
+**Linux / macOS:**
 ```bash
-cd CTranslator
-dotnet build
+make
+./ctranslator tests/input.txt
 ```
 
-### Запуск с тестовым файлом
+**Windows (MinGW / TDM-GCC):**
+```bat
+build.bat
+ctranslator.exe tests\input.txt
+```
 
+### Запуск тестов
 ```bash
-# Основной тест (нахождение максимума двух чисел)
-dotnet run -- tests/input.txt
-
-# Тест арифметики
-dotnet run -- tests/test_arith.txt
-
-# Тест вложенных условий
-dotnet run -- tests/test_nested_if.txt
-
-# Тест деления на ноль
-dotnet run -- tests/test_divzero.txt
-
-# Тест семантической ошибки
-dotnet run -- tests/test_semantic_err.txt
+./ctranslator tests/test_arith.txt       # арифметика
+./ctranslator tests/test_nested_if.txt   # вложенные условия
+./ctranslator tests/test_divzero.txt     # деление на ноль
+./ctranslator tests/test_semantic_err.txt # семантические ошибки
 ```
 
 ### Запуск собственной программы
 Создайте файл `myprog.txt` и запустите:
 ```bash
-dotnet run -- myprog.txt
+./ctranslator myprog.txt
 ```
 
 ---
